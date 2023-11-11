@@ -41,15 +41,25 @@
 			gltfLoader.load('/src/assets/mannequin/scene.gltf', (gltf)=>{
 				scene.add(gltf.scene);
 				// New code to extract vertices and save to a file
-				{/* THIS CODE EXTRACTS POINT CLOUD FROM GLTF
+
+				{/*
+				//THIS CODE EXTRACTS POINT CLOUD FROM GLTF
 				
 				const vertices = [];
 				gltf.scene.traverse(function (child) {
 					if (child.isMesh) {
 						const geometry = child.geometry;
-						geometry.vertices = []; // Ensure there's a vertices array to populate
-						geometry.vertices.push(...geometry.attributes.position.array); // Push vertex data into the array
-						vertices.push(geometry.vertices); // Add to vertices array
+						const positions = geometry.attributes.position.array;
+						let swappedVertices = [];
+
+						for (let i = 0; i < positions.length; i+=3){
+							const x = positions[i];
+							const y = positions[i+1];
+							const z = positions[i+2];
+
+							swappedVertices.push(x,z,-y);
+						}
+						vertices.push(swappedVertices); // Add to vertices array
 					}
 				});
 
@@ -59,8 +69,9 @@
 				anchor.download = 'pointCloud.json';
 				anchor.click();
 				URL.revokeObjectURL(anchor.href); // Clean up the URL object
-				
+
 				*/}
+				
 			});
 
 			renderer_1.setSize(workspace.clientWidth, workspace.clientHeight);
@@ -72,15 +83,15 @@
 
 		if(pointcloud){
 			camera_2 = new THREE.PerspectiveCamera(70, pointcloud.clientWidth / pointcloud.clientHeight, 0.001, 1000 );
-                      	camera_2.position.set(1,1.618,1.618);
+                      	camera_2.position.set(61.8,100,100);
                       	const controls = new OrbitControls(camera_2, renderer_2.domElement);
-                      	controls.target.set(0,1,0);
-                      	//controls.enableZoom = false;
-                     	//controls.enablePan = false;
+                      	controls.target.set(0,0,0);
+                      	controls.enableZoom = false;
+                     	controls.enablePan = false;
                      	controls.update();
                      	const scene = new THREE.Scene();
   
-                      	addAxesToScene(scene, 2);
+                      	addAxesToScene(scene, 200);
                       	const ambientLight = new THREE.AmbientLight(0xffffff);
                       	scene.add(ambientLight);
   
